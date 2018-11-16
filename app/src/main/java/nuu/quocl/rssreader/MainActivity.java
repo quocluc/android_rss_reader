@@ -1,8 +1,12 @@
 package nuu.quocl.rssreader;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +17,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import nuu.quocl.rssreader.Adapter.FeedAdapter;
+import nuu.quocl.rssreader.Common.HTTPDataHandler;
+import nuu.quocl.rssreader.Model.RSSObject;
+import com.google.gson.Gson;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    RecyclerView recyclerView;
+    RSSObject rssObject;
+
+    private final String RSS_link = "https://vnexpress.net/rss/tin-moi-nhat.rss";
+    private final String RSS_to_Json_API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +56,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        loadRss();
     }
 
     @Override
@@ -97,5 +118,38 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void loadRss() {
+        AsyncTask<String, String, String> loadRSSAsync = new AsyncTask<String, String, String>() {
+            ProgressDialog mDialog = new ProgressDialog(MainActivity.this);
+
+            @Override
+            protected void onPreExecute() {
+                mDialog.setMessage("Please wait....");
+                mDialog.show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                String result;
+                HTTPDataHandler http = new HTTPDataHandler();
+                result = http.GetHTTPData(strings[0]);
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                mDialog.dismiss();
+                rssObject = new Gson().fromJson(s, RSSObject.class);
+                FeedAdapter adapter = new FeedAdapter(rssObject, getBaseContext());
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+
+        };
+        StringBuilder url_get_data = new StringBuilder(RSS_to_Json_API);
+        url_get_data.append(RSS_link);
+        loadRSSAsync.execute(url_get_data.toString());
     }
 }
