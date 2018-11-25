@@ -20,8 +20,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.security.ProviderInstaller;
+import com.squareup.picasso.Picasso;
+
+import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 
 import nuu.quocl.rssreader.Interface.ItemClickListener;
 import nuu.quocl.rssreader.Model.RSSObject;
@@ -86,27 +97,32 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
         holder.txtTitle.setText(rssObject.getItems().get(position).getTitle());
         holder.txtPubDate.setText(rssObject.getItems().get(position).getPubDate());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription(), Html.FROM_HTML_MODE_COMPACT));
-        } else {
-            holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription()));
-        }
-//        holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription(), new Html.ImageGetter() {
-//
-//            @Override
-//            public Drawable getDrawable(String source) {
-//                Drawable drawable = Drawable.createFromPath(rssObject.getItems().get(position).getThumbnail());
-//                try {
-//                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-//                } catch (NullPointerException e) {
-//                    Log.e(TAG, "getDrawable: ", e);
-//                }
-//                return drawable;
-//            }
-//        }, null));
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription(), Html.FROM_HTML_MODE_COMPACT));
+//        } else {
+//            holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription()));
+//        }
+        initializeSSLContext(mContext);
+        holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription(), new Html.ImageGetter() {
 
-        new DownloadImageTask(holder.imageView)
-                .execute(rssObject.getItems().get(position).getThumbnail());
+            @Override
+            public Drawable getDrawable(String source) {
+                Drawable drawable = Drawable.createFromPath(rssObject.getItems().get(position).getThumbnail());
+                try {
+                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                } catch (NullPointerException e) {
+                    Log.e(TAG, "getDrawable: ", e);
+                }
+                return drawable;
+            }
+        }, null));
+
+//        new DownloadImageTask(holder.imageView)
+//                .execute(rssObject.getItems().get(position).getThumbnail());
+
+        if (!rssObject.getItems().get(position).getThumbnail().isEmpty()) {
+            Picasso.get().load(rssObject.getItems().get(position).getThumbnail()).into(holder.imageView);
+        }
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override
@@ -133,6 +149,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
             try {
+                initializeSSLContext(mContext);
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
@@ -141,6 +158,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             }
             return mIcon11;
         }
+
 
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
@@ -152,5 +170,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
         return rssObject.items.size();
     }
 
+    public static void initializeSSLContext(Context mContext) {
+        try {
+            SSLContext.getInstance("TLSv1.2");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        try {
+            ProviderInstaller.installIfNeeded(mContext.getApplicationContext());
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

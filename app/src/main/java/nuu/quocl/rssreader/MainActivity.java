@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     RSSObject rssObject;
 
-    private final String RSS_link = "https://vnexpress.net/rss/tin-moi-nhat.rss";
+    private final String RSS_link = "https://tinhte.vn/rss";
     private final String RSS_to_Json_API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
     @Override
