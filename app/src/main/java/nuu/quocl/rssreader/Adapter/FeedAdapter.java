@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
@@ -97,31 +98,25 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
         holder.txtTitle.setText(rssObject.getItems().get(position).getTitle());
         holder.txtPubDate.setText(rssObject.getItems().get(position).getPubDate());
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription(), Html.FROM_HTML_MODE_COMPACT));
-//        } else {
-//            holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription()));
-//        }
-        initializeSSLContext(mContext);
-        holder.txtContent.setText(Html.fromHtml(rssObject.getItems().get(position).getDescription(), new Html.ImageGetter() {
-
-            @Override
-            public Drawable getDrawable(String source) {
-                Drawable drawable = Drawable.createFromPath(rssObject.getItems().get(position).getThumbnail());
-                try {
-                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                } catch (NullPointerException e) {
-                    Log.e(TAG, "getDrawable: ", e);
-                }
-                return drawable;
-            }
-        }, null));
-
-//        new DownloadImageTask(holder.imageView)
-//                .execute(rssObject.getItems().get(position).getThumbnail());
-
+        String htmlBody = rssObject.getItems().get(position).getContent().replaceAll("(<(/)img>)|(<img.+?>)", "");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            holder.txtContent.setText(Html.fromHtml(htmlBody, Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            holder.txtContent.setText(Html.fromHtml(htmlBody));
+        }
         if (!rssObject.getItems().get(position).getThumbnail().isEmpty()) {
-            Picasso.get().load(rssObject.getItems().get(position).getThumbnail()).into(holder.imageView);
+            initializeSSLContext(mContext);
+            Picasso.get().load(rssObject.getItems().get(position).getThumbnail()).error(R.drawable.no_image_available_180x180).into(holder.imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Log.i(TAG, "onSuccess: " + rssObject.getItems().get(position).getThumbnail());
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e(TAG, "onError: ", e);
+                }
+            });
         }
 
         holder.setItemClickListener(new ItemClickListener() {
@@ -136,33 +131,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             }
         });
 
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                initializeSSLContext(mContext);
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
     }
 
     @Override
