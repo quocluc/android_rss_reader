@@ -9,7 +9,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -35,6 +40,7 @@ import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 
+import nuu.quocl.rssreader.DetailNewFragment;
 import nuu.quocl.rssreader.Interface.ItemClickListener;
 import nuu.quocl.rssreader.Model.RSSObject;
 import nuu.quocl.rssreader.R;
@@ -123,10 +129,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
                 if (!isLongClick) {
-//                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(rssObject.getItems().get(position).getLink()));
-//                    mContext.startActivity(browserIntent);
-                    String link = rssObject.getItems().get(position).getLink();
-                    Toast.makeText(view.getContext(), link, Toast.LENGTH_SHORT).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("new", rssObject.getItems().get(position));
+                    bundle.putString("title", rssObject.getFeed().getTitle());
+                    DetailNewFragment detailNewFragment = new DetailNewFragment();
+                    detailNewFragment.setArguments(bundle);
+                    ((FragmentActivity) view.getContext()).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.homeFragment, detailNewFragment).addToBackStack(null)
+                            .commit();
                 }
             }
         });

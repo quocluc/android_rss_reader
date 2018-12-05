@@ -3,17 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_today"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Hôm nay" />
-        <item
-            android:id="@+id/nav_save"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Đã lưu" />
-    </group>
-
+    <item android:title="Nguồn tin">
+        <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/newTinhte"
+                android:title="Tinhte.vn" />
+            <item
+                android:id="@+id/new24h"
+                android:title="24H" />
+            <item
+                android:id="@+id/newVnexpress"
+                android:title="VnExpress" />
+        </group>
+    </item>
     <item android:title="Cá nhân">
         <menu>
             <item

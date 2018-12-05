@@ -1,8 +1,11 @@
 package nuu.quocl.rssreader.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class Item {
+public class Item implements Parcelable {
     private String title;
     private String pubDate;
     private String link;
@@ -27,6 +30,30 @@ public class Item {
         this.enclosure = enclosure;
         this.categories = categories;
     }
+
+    protected Item(Parcel in) {
+        title = in.readString();
+        pubDate = in.readString();
+        link = in.readString();
+        guid = in.readString();
+        author = in.readString();
+        thumbnail = in.readString();
+        description = in.readString();
+        content = in.readString();
+        categories = in.createStringArrayList();
+    }
+
+    public static final Creator<Item> CREATOR = new Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 
     public List<String> getCategories() {
         return categories;
@@ -108,4 +135,21 @@ public class Item {
         this.enclosure = value;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(pubDate);
+        dest.writeString(link);
+        dest.writeString(guid);
+        dest.writeString(author);
+        dest.writeString(thumbnail);
+        dest.writeString(description);
+        dest.writeString(content);
+        dest.writeStringList(categories);
+    }
 }
