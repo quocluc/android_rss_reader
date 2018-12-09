@@ -4,41 +4,36 @@
     tools:showIn="navigation_view">
 
     <item android:title="Nguồn tin">
-        <group android:checkableBehavior="single">
-            <item
-                android:id="@+id/newTinhte"
-                android:title="Tinhte.vn" />
-            <item
-                android:id="@+id/new24h"
-                android:title="24H" />
-            <item
-                android:id="@+id/newVnexpress"
-                android:title="VnExpress" />
-        </group>
-    </item>
-    <item android:title="Cá nhân">
         <menu>
-            <item
-                android:id="@+id/nav_all"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Tất cả" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/new24h"
+                    android:title="24H" />
+                <item
+                    android:id="@+id/newVnexpress"
+                    android:title="VnExpress" />
+                <item
+                    android:id="@+id/newZing"
+                    android:title="Zing New" />
+                <item
+                    android:id="@+id/newThanhNien"
+                    android:title="Thanh niên" />
+                <item
+                    android:id="@+id/newVietnamenet"
+                    android:title="Vietnamnet" />
+                <item
+                    android:id="@+id/newDantri"
+                    android:title="Dân Trí" />
+                <item
+                    android:id="@+id/newVnreview"
+                    android:title="VnReview" />
+
+                <item
+                    android:id="@+id/newTuoiTre"
+                    android:title="Tuổi trẻ" />
+            </group>
         </menu>
     </item>
-    <item android:title="Thiết lập">
-        <menu>
-            <item
-                android:id="@+id/nav_setting"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="Cài đặt" />
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Đăng xuất" />
-        </menu>
-    </item>
+
 
 </menu>

@@ -1,6 +1,7 @@
 package nuu.quocl.rssreader;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,6 +57,7 @@ public class ViewFragment extends Fragment {
         webView.loadUrl(link);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+
     }
 
     @Override
@@ -67,7 +69,10 @@ public class ViewFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
             webView.reload();
+            return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
+
     }
+
 }

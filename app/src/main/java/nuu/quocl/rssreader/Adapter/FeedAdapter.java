@@ -134,7 +134,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
                     bundle.putString("title", rssObject.getFeed().getTitle());
                     DetailNewFragment detailNewFragment = new DetailNewFragment();
                     detailNewFragment.setArguments(bundle);
-                    ((FragmentActivity) view.getContext()).getSupportFragmentManager().beginTransaction()
+                    ((FragmentActivity) view.getContext()).getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .replace(R.id.homeFragment, detailNewFragment).addToBackStack(null)
                             .commit();
                 }

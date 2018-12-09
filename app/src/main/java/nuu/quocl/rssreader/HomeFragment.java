@@ -92,15 +92,31 @@ public class HomeFragment extends Fragment implements NavigationView.OnNavigatio
         int id = menuItem.getItemId();
 
         switch (id) {
-            case R.id.newTinhte:
-                loadRss("https://tinhte.vn/rss");
-                break;
             case R.id.new24h:
                 loadRss("https://www.24h.com.vn/upload/rss/trangchu24h.rss");
                 break;
             case R.id.newVnexpress:
                 loadRss("https://vnexpress.net/rss/tin-moi-nhat.rss");
                 break;
+            case R.id.newDantri:
+                loadRss("https://dantri.com.vn/trangchu.rss");
+                break;
+            case R.id.newThanhNien:
+                loadRss("https://thanhnien.vn/rss/home.rss");
+                break;
+            case R.id.newTuoiTre:
+                loadRss("https://tuoitre.vn/rss/tin-moi-nhat.rss");
+                break;
+            case R.id.newVietnamenet:
+                loadRss("http://vietnamnet.vn/rss/home.rss");
+                break;
+            case R.id.newVnreview:
+                loadRss("https://vnreview.vn/feed/-/rss/home");
+                break;
+            case R.id.newZing:
+                loadRss("https://vnexpress.net/rss/tin-moi-nhat.rss");
+                break;
+
             default:
 
         }
